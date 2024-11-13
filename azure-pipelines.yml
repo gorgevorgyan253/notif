@@ -10,10 +10,43 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
+  - bash: 'wget --no-check-certificate -c --header "Cookie: oraclelicense=accept-securebackup-cookie" https://download.oracle.com/java/21/latest/jdk-21_linux-x64_bin.tar.gz '
+    displayName: 'Bash Script'
 
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+  - task: JavaToolInstaller@0
+    displayName: 'Use Java 21'
+    inputs:
+      versionSpec: 21
+      jdkArchitectureOption: x64
+      jdkSourceOption: LocalDirectory
+      jdkFile: '$(build.sourcesdirectory)/jdk-21_linux-x64_bin.tar.gz'
+      jdkDestinationDirectory: '$(agent.toolsDirectory)/jdk21'
+  - task: NodeTool@0
+    displayName: 'Install Node'
+    inputs:
+      versionSpec: '22.11.0'
+  - script: yarn install
+    displayName: Install Dependencies
+  - script: npx expo prebuild
+    displayName: Prebuild
+  - script: ls
+    displayName: LS
+
+  - task: Gradle@3
+    inputs:
+      gradleWrapperFile: 'android/gradlew'
+      workingDirectory: 'android/'
+      tasks: 'build'
+      publishJUnitResults: false
+      testResultsFiles: '**/TEST-*.xml'
+      jdkVersionOption: '1.17'
+      javaHomeOption: 'JDKVersion'
+      sonarQubeRunAnalysis: false
+      spotBugsAnalysis: false
+  - task: PublishBuildArtifacts@1
+    displayName: 'Publish APK to artifacts'
+    inputs:
+      PathtoPublish: 'android/app/build/outputs/apk/release'
+      ArtifactName: 'android'
+      publishLocation: 'Container'
+  
