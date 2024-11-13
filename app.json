@@ -22,6 +22,9 @@
       "package": "com.goro12.reactexpopushnotifications",
       "googleServicesFile": "./google-services.json"
     },
+    "ios": {
+      "bundleIdentifier": "com.goro12.reactexpopushnotifications",
+    },
     "web": {
       "favicon": "./assets/favicon.png"
     },
