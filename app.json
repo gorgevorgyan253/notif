@@ -20,7 +20,7 @@
         "backgroundColor": "#ffffff"
       },
       "package": "com.goro12.reactexpopushnotifications",
-      "googleServicesFile": "./google-services.json"
+      "googleServicesFile": "./google-service.json"
     },
     "ios": {
       "bundleIdentifier": "com.goro12.reactexpopushnotifications",
